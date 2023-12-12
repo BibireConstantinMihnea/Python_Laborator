@@ -16,12 +16,12 @@ def reddit_news_fetch(subject):
     oauth_url = 'https://oauth.reddit.com'
 
     headers = {'Authorization': token, 'User-Agent': 'NewsFeedGUI'}
-    payload = {'q': subject, 'limit': 5, 'sort': 'new'}
+    search_params = {'q': subject, 'limit': 10, 'sort': 'new', 'restrict_sr': 'True'}
 
     news_data = []
     index = 0
 
-    response = requests.get(oauth_url + '/r/news/search', headers=headers, params=payload)
+    response = requests.get(oauth_url + '/r/news/search', headers=headers, params=search_params)
     if response.status_code == 200:
         news = response.json()
         for post in news['data']['children']:
@@ -29,7 +29,10 @@ def reddit_news_fetch(subject):
             post_data = post['data']
             title = post_data['title']
             link = post_data['url']
-            source = post_data['subreddit_name_prefixed']
+            source = "Reddit - " + post_data['subreddit_name_prefixed']
             news_data.append((index, source, title, link))
         
     return news_data
+
+def other_news_fetch():
+    pass

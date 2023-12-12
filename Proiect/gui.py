@@ -16,12 +16,10 @@ class NewsFeed:
         self.button = ttk.Button(mainframe, text="Cautare", command=self.get_news)
         self.button.pack(pady=10)
 
-        self.tree = ttk.Treeview(mainframe, columns=("Source", "Title", "Link"))
-        self.tree.heading("#0", text="Nr.")
-        self.tree.heading("Source", text="Sursa")
-        self.tree.heading("Title", text="Titlu")
-        self.tree.heading("Link", text="Link")
-        self.tree.pack(pady=20)
+        self.text_widget = tk.Text(mainframe, wrap="word", width=80, height=20)
+        self.text_widget.pack(pady=20)
+
+        self.text_widget.pack(pady=20)
 
     def get_news(self):
         subject = self.entry.get()
@@ -30,8 +28,8 @@ class NewsFeed:
             self.display_news(news_data)
 
     def display_news(self, news_data):
-        for item in self.tree.get_children():
-            self.tree.delete(item)
+       self.text_widget.delete(1.0, tk.END)  # Clear previous content
 
-        for news in news_data:
-            self.tree.insert("", "end", values=news)
+       for index, source, title, link in news_data:
+            display_text = f"{index}. {title}\nSursa: {source}\nLink: {link}\n\n"
+            self.text_widget.insert(tk.END, display_text)
