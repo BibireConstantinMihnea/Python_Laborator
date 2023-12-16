@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from api_requests import reddit_news_fetch, nyt_news_fetch
+from api_requests import reddit_news_fetch, nyt_news_fetch, theguardian_news_fetch, google_news_fetch
 
 class NewsFeed:
     def __init__(self, mainframe):
@@ -26,7 +26,9 @@ class NewsFeed:
         if subject:
             news_data_reddit = reddit_news_fetch(subject)
             news_data_nyt = nyt_news_fetch(subject)
-            news_data = news_data_reddit + news_data_nyt
+            news_data_tg = theguardian_news_fetch(subject)
+            news_data_google = google_news_fetch(subject)
+            news_data = news_data_reddit + news_data_nyt + news_data_tg + news_data_google
             self.display_news(news_data)
 
     def display_news(self, news_data):

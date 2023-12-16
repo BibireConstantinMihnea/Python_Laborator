@@ -1,4 +1,5 @@
 import requests
+import xml.etree.ElementTree as ET
 
 def reddit_news_fetch(subject):
     base_url = 'https://www.reddit.com/'
@@ -56,4 +57,48 @@ def nyt_news_fetch(subject):
             source = article['source']
             news_data.append((source, title, link))
 
+    return news_data
+
+
+def theguardian_news_fetch(subject):
+    api_key = "002f9499-43f4-423b-bf13-ea800f1ffc58"
+    base_url = "https://content.guardianapis.com/search"
+
+    params = {
+        'q': subject,
+        'api-key': api_key,
+        'from-date': '2023-01-01'
+    }
+
+    response = requests.get(base_url, params=params)
+
+    news_data = []
+
+    if response.status_code == 200:
+        articles = response.json()['response']['results']
+        for article in articles:
+            title = article['webTitle']
+            link = article['webUrl']
+            source = 'The Guardian'
+            news_data.append((source, title, link))
+
+    return news_data
+
+
+def google_news_fetch(subject):
+    base_url = f"https://news.google.com/rss/search?q={subject}+after:2023-12-01"
+
+    response = requests.get(base_url)
+
+    news_data = []
+
+    if response.status_code == 200:
+        root = ET.fromstring(response.content)
+
+        for item in root.findall(".//item"):
+            title = item.find("title").text
+            link = item.find("link").text
+            source = item.find("source").text + " via Google News"
+            news_data.append((source, title, link))
+        
     return news_data
